@@ -189,7 +189,7 @@ set +x
 # us.icr.io/sample/hello-containers-20190823092122682:1-master-a15bd262-20190823100927
 # or
 # us.icr.io/sample/hello-containers-20190823092122682:1-master-a15bd262-20190823100927@sha256:9b56a4cee384fa0e9939eee5c6c0d9912e52d63f44fa74d1f93f3496db773b2e
-DEPLOYMENT_NAME=$(kubectl get deploy --namespace ${CLUSTER_NAMESPACE} -o json | jq -r '.items[] | select(.spec.template.spec.containers[]?.image | test("'"${IMAGE_REPOSITORY}:${IMAGE_TAG}"'(@.+|$)")) | .metadata.name' )
+DEPLOYMENT_NAME=$(kubectl get pods --namespace ${CLUSTER_NAMESPACE} -o json | jq -r '[ .items[] | select(.spec.containers[]?.image | contains("'"${IMAGE_REPOSITORY}"'")) | .metadata.labels.app] [1]' )
 echo -e "CHECKING deployment rollout of ${DEPLOYMENT_NAME}"
 echo ""
 set -x
